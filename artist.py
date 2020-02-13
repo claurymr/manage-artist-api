@@ -1,4 +1,4 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 
@@ -41,12 +41,21 @@ ARTISTS = [
 ]
 
 # sanity check route
-@app.route('/artists', methods=['GET'])
+@app.route('/artists', methods=['GET', 'POST'])
 def all_artists():
-    return jsonify({
-        'status': 'success',
-        'artists': ARTISTS
+    response_object = {'status': 'success'}
+    if request.method == 'POST':
+        data = request.get_json(),
+        ARTISTS.append({
+            'firstName': data.get('firstName'),
+            'lastName': data.get('lastName'),
+            'dateOfBirth': data.get('dateOfBirth')
+            
         })
+        response_object['message'] = 'Artist added successfully'
+    else:
+        response_object['artists'] = ARTISTS
+    return jsonify(response_object)
 
 
 if __name__ == '__main__':
